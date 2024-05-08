@@ -10,6 +10,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.room.Room
 import com.example.locationbitacora.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Granularity
@@ -113,6 +114,29 @@ class MainActivity : AppCompatActivity() {
     private fun printLocation(location: Location) {
         // guardar coordenadas en room
         Log.d("GPS", "LAT: ${location.latitude} - LONG: ${location.longitude}")
+
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "database-name"
+        ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
+
+        val locationDao = db.location()
+
+        var location = Location(
+            0,
+            location.latitude.toString(),
+            location.longitude.toString())
+
+        locationDao.insertAll(location)
+
+       /* val list = locationDao.getAll()
+
+        list.map {
+            it.lat
+            it.log
+        }*/
+
+
     }
 
     override fun onRequestPermissionsResult(
